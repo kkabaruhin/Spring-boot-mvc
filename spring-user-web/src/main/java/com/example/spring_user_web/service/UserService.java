@@ -1,0 +1,59 @@
+package com.example.spring_user_web.service;
+
+import com.example.spring_user_web.exception.UserNotFoundException;
+import com.example.spring_user_web.model.User;
+import com.example.spring_user_web.repository.UserRepository;
+import com.example.spring_user_web.web.dto.UserDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+
+import java.util.stream.Collectors;
+
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public Collection<UserDto> findAll() {
+
+        return userRepository.findAll().stream().map(UserDto::new).collect(Collectors.toList());
+    }
+
+    public UserDto findById(long id) {
+
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        return new UserDto(user);
+    }
+
+    public UserDto create(UserDto user) {
+        userRepository.save(new User(user.getName(), user.getEmail(), user.getAge(), user.getCreatedAt()));
+        return user;
+    }
+
+    public UserDto update(long userId, UserDto userForUpdate) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+        if (userForUpdate.getName() != null && !user.getName().equals(userForUpdate.getName())) {
+            user.setName(userForUpdate.getName());
+        }
+
+        if (userForUpdate.getEmail() != null && !user.getEmail().equals(userForUpdate.getEmail())) {
+            user.setEmail(userForUpdate.getEmail());
+        }
+
+        if (user.getAge() != userForUpdate.getAge()) {
+            user.setAge(userForUpdate.getAge());
+        }
+        userRepository.save(user);
+        user = userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
+
+        return new UserDto(user);
+    }
+
+    public void deleteById(long userId) {
+        userRepository.deleteById(userId);
+    }
+}

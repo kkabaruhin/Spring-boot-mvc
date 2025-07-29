@@ -1,0 +1,15 @@
+spring:
+  profiles:
+
+    active: jpa
+  liquibase:
+    change-log: classpath:db/master.xml
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    generate-ddl: false
+    show-sql: true
