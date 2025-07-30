@@ -1,6 +1,5 @@
 spring:
   profiles:
-
     active: jpa
   liquibase:
     change-log: classpath:db/master.xml
@@ -13,3 +12,17 @@ spring:
       ddl-auto: create-drop
     generate-ddl: false
     show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: kabaruhin.kirill@gmail.com
+    password: yvbcxipzwdutqenb
+    properties:
+      mail:
+        debug: false
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true

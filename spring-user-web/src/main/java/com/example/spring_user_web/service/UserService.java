@@ -1,14 +1,17 @@
 package com.example.spring_user_web.service;
 
 import com.example.spring_user_web.exception.UserNotFoundException;
+import com.example.spring_user_web.kafka.UserKafkaProducer;
 import com.example.spring_user_web.model.User;
 import com.example.spring_user_web.repository.UserRepository;
 import com.example.spring_user_web.web.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,6 +19,12 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserKafkaProducer userKafkaProducer;
+
+    //@Autowired
+    //private MailSenderService mailSenderService;
 
     public Collection<UserDto> findAll() {
 
@@ -30,6 +39,8 @@ public class UserService {
 
     public UserDto create(UserDto user) {
         userRepository.save(new User(user.getName(), user.getEmail(), user.getAge(), user.getCreatedAt()));
+        userKafkaProducer.sendUserToKafka("create", user);
+        //mailSenderService.sendHello(user);
         return user;
     }
 
@@ -54,6 +65,12 @@ public class UserService {
     }
 
     public void deleteById(long userId) {
-        userRepository.deleteById(userId);
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            userRepository.deleteById(userId);
+            userKafkaProducer.sendUserToKafka("delete", new UserDto(user.get()));
+           // mailSenderService.sendGoodBy(new UserDto(user.get()));
+        }
+
     }
 }
