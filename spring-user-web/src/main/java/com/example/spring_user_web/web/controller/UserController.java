@@ -46,7 +46,6 @@ public class UserController {
 
     @GetMapping("/update/{id}")
     public String showUpdateForm(Model model, @PathVariable long id) {
-
         UserDto userDto = userService.findById(id);
         model.addAttribute("user", userDto);
         return "user/update-form";
