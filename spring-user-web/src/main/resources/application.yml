@@ -1,28 +1,8 @@
+server:
+  port: 8080
 spring:
-  profiles:
-    active: jpa
-  liquibase:
-    change-log: classpath:db/master.xml
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: admin
-    password: admin
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    generate-ddl: false
-    show-sql: true
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: kabaruhin.kirill@gmail.com
-    password: yvbcxipzwdutqenb
-    properties:
-      mail:
-        debug: false
-        transport:
-          protocol: smtp
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+  application:
+    name: user-web-app
+  config:
+    import: 'configserver:http://localhost:8888'
+

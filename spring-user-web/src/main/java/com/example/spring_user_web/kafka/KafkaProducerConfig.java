@@ -4,6 +4,7 @@ import com.example.spring_user_web.web.dto.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -18,6 +19,7 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     @Bean
+    @LoadBalanced
     public ProducerFactory<String, UserDto> producerFactory(ObjectMapper objectMapper) {
         Map<String, Object> configProperties = new HashMap<>();
         configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
@@ -28,6 +30,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
+    @LoadBalanced
     public KafkaTemplate<String, UserDto> kafkaTemplate(ProducerFactory<String, UserDto> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
